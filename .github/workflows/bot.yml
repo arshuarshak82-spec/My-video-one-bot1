@@ -30,3 +30,4 @@ jobs:
       - name: Run Bot
         run: |
           python main.py
+          
