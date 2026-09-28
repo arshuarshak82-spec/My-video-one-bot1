@@ -25,8 +25,6 @@ GEMINI_API_KEY = "8809575029:AAGIIFpAkIrKFNDmAmAxwiUVqQucIzIfYrk"
 genai.configure(api_key=GEMINI_API_KEY)
 gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
-# സിഇഒ ഐഡിയും യൂസർ ട്രാക്കിംഗിനുള്ള സെറ്റപ്പും
-CEO_USER_ID = 74  # ആവശ്യമെങ്കിൽ നിങ്ങളുടെ ടെലഗ്രാം യൂസർ ഐഡി ഇവിടെ നൽകാം
 users_set = set()
 
 def get_start_buttons():
@@ -49,7 +47,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
   welcome_text = (
       "Welcome to **AR Downloader Bot**! 🚀\n\n"
-      "You can download videos, audio, and large media files seamlessly from YouTube, Instagram, "
+      "You can download videos, audio, and media files seamlessly from YouTube, Instagram, "
       "Facebook, Apple Music, and other supported platforms.\n\n"
       "• Our Founder Arshak K.V.: (Visually Impaired, Political Science graduate, "
       "currently pursuing a Master’s degree in the discipline, and founder of 'Political Malayali').\n\n"
@@ -70,8 +68,6 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
   )
 
 async def broadcast_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-  user = update.effective_user
-  # ഇവിടെ അഡ്മിൻ പരിശോധന നടത്താം (ആവശ്യമെങ്കിൽ മാത്രം)
   if not context.args:
     await update.message.reply_text("⚠️ Please provide a message to broadcast. Usage: /broadcast Your message here")
     return
@@ -162,7 +158,7 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.edit_message_text("⚠️ Error: Link not found. Please send the link again.")
     return
 
-  await query.edit_message_text('📥 Downloading high-quality media... Please wait.')
+  await query.edit_message_text('📥 Downloading media... Please wait.')
 
   is_audio = False
   ydl_opts = {
@@ -176,7 +172,7 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
   if choice.startswith('mp3'):
     is_audio = True
-    quality = '64' if 'low' in choice else ('128' if 'med' in choice else '320')
+    quality = '64' if 'low' in choice else ('128' if 'med' in choice else '192')
     ydl_opts.update({
         'format': 'bestaudio/best',
         'outtmpl': 'downloaded_audio.%(ext)s',
@@ -188,7 +184,7 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
     })
   elif choice.startswith('m4a'):
     is_audio = True
-    quality = '64' if 'low' in choice else ('128' if 'med' in choice else '320')
+    quality = '64' if 'low' in choice else ('128' if 'med' in choice else '192')
     ydl_opts.update({
         'format': 'bestaudio/best',
         'outtmpl': 'downloaded_audio.%(ext)s',
@@ -209,9 +205,9 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'outtmpl': 'downloaded_video.%(ext)s',
     })
   elif choice == 'mp4_high':
-    # വലിയ സൈസുള്ള ഹൈ ക്വാളിറ്റി വീഡിയോകൾക്കായി ഒപ്റ്റിമൈസ് ചെയ്ത ഫോർമാറ്റ്
+    # ഡീപ്സീക് നിർദ്ദേശിച്ച ഫയൽ സൈസ് ഒപ്റ്റിമൈസേഷൻ
     ydl_opts.update({
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+        'format': 'best[filesize<50M]/bestvideo[height<=480]+bestaudio/best[height<=480]',
         'outtmpl': 'downloaded_video.%(ext)s',
     })
 
@@ -231,7 +227,7 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
           filename = base_name + ('.mp3' if 'mp3' in choice else '.m4a')
 
     if filename and os.path.exists(filename):
-      await query.edit_message_text('🚀 Uploading to Telegram (handling large files)... Please wait.')
+      await query.edit_message_text('🚀 Uploading to Telegram... Please wait.')
       if is_audio:
         with open(filename, 'rb') as audio_file:
           await query.message.reply_audio(
@@ -298,4 +294,3 @@ if __name__ == '__main__':
   app.add_handler(CallbackQueryHandler(button_click))
 
   app.run_polling()
-                               
