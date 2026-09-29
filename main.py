@@ -20,9 +20,11 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-# ജെമിനി എഐ ബാക്ക്എൻഡ് കോൺഫിഗറേഷൻ
-GEMINI_API_KEY = "8809575029:AAGIIFpAkIrKFNDmAmAxwiUVqQucIzIfYrk"
-genai.configure(api_key=GEMINI_API_KEY)
+# ഗിത്ഹബ് സീക്രട്ടിൽ നിന്ന് ബോട്ട് ടോക്കൺ എടുക്കുന്നു
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+
+# ജെമിനി എഐ ബാക്ക്എൻഡ് കോൺഫിഗറേഷൻ (ബോട്ട് ടോക്കൺ തന്നെ ജെമിനി കീ ആയി ഉപയോഗിക്കുന്നുവെങ്കിൽ)
+genai.configure(api_key=BOT_TOKEN)
 gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
 users_set = set()
@@ -170,6 +172,10 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
       'no_warnings': True,
   }
 
+  # cookies.txt ഫയൽ ലഭ്യമാണെങ്കിൽ അത് ഉപയോഗിക്കാനുള്ള ക്രമീകരണം
+  if os.path.exists('cookies.txt'):
+    ydl_opts['cookiefile'] = 'cookies.txt'
+
   if choice.startswith('mp3'):
     is_audio = True
     quality = '64' if 'low' in choice else ('128' if 'med' in choice else '192')
@@ -205,7 +211,6 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'outtmpl': 'downloaded_video.%(ext)s',
     })
   elif choice == 'mp4_high':
-    # ഡീപ്സീക് നിർദ്ദേശിച്ച ഫയൽ സൈസ് ഒപ്റ്റിമൈസേഷൻ
     ydl_opts.update({
         'format': 'best[filesize<50M]/bestvideo[height<=480]+bestaudio/best[height<=480]',
         'outtmpl': 'downloaded_video.%(ext)s',
@@ -274,7 +279,8 @@ def check_internet():
     return False
 
 if __name__ == '__main__':
-  TOKEN = '8809575029:AAGIIFpAkIrKFNDmAmAxwiUVqQucIzIfYrk'
+  if not BOT_TOKEN:
+    raise ValueError("BOT_TOKEN environment variable is not set!")
 
   print('ഇന്റർനെറ്റ് കണക്ഷനായി കാത്തിരിക്കുന്നു...')
   while not check_internet():
@@ -283,7 +289,7 @@ if __name__ == '__main__':
   print('ഇന്റർനെറ്റ് കണക്ട ആയി! ബോട്ട് സ്റ്റാർട്ട് ചെയ്യുന്നു...')
 
   request = HTTPXRequest(connect_timeout=120.0, read_timeout=120.0)
-  app = ApplicationBuilder().token(TOKEN).request(request).build()
+  app = ApplicationBuilder().token(BOT_TOKEN).request(request).build()
 
   app.add_handler(CommandHandler('start', start))
   app.add_handler(CommandHandler('stats', stats_command))
