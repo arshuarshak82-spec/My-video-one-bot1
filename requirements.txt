@@ -1,4 +1,7 @@
-pyTelegramBotAPI
+python-telegram-bot
 yt-dlp
-ffmpeg-python
+google-generativeai
+httpx
+requests
+
 
