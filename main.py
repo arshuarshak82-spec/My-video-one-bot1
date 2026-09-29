@@ -20,11 +20,12 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-# പുതിയ ടോക്കൺ നേരിട്ട് ഇവിടെ നൽകിയിരിക്കുന്നു
+# ടെലഗ്രാം ബോട്ട് ടോക്കൺ
 BOT_TOKEN = "8809575029:AAE1cL_RWB2x0R7w4dOyGqw_qyOVbnWbP_k"
 
-# ജെമിനി എഐ ബാക്ക്എൻഡ് കോൺഫിഗറേഷൻ
-genai.configure(api_key=BOT_TOKEN)
+# നിങ്ങൾ തന്ന പുതിയ ജെമിനി എപിഐ കീ ഇവിടെ കൃത്യമായി ചേർത്തിട്ടുണ്ട്
+GEMINI_API_KEY = "AQ.Ab8RN6LDISBiqS2-q4OoOOkjgoHPB72zZ4cQAPcOdncjs3O_RQ"
+genai.configure(api_key=GEMINI_API_KEY)
 gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
 users_set = set()
@@ -121,7 +122,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("💬 Contact CEO", url="https://t.me/ARSHAK74")],
     ]
     await update.message.reply_text(
-        "Please select your preferred format and quality:",
+        "Please select your preferred format and quality (Optimized for Malayalam Thumbnail & Documentary processing):",
         reply_markup=InlineKeyboardMarkup(keyboard),
     )
   else:
@@ -160,7 +161,7 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.edit_message_text("⚠️ Error: Link not found. Please send the link again.")
     return
 
-  await query.edit_message_text('📥 Downloading media... Please wait.')
+  await query.edit_message_text('📥 Downloading media (Optimized for Documentary/Malayalam processing)... Please wait.')
 
   is_audio = False
   ydl_opts = {
@@ -298,5 +299,4 @@ if __name__ == '__main__':
   )
   app.add_handler(CallbackQueryHandler(button_click))
 
-  app.run_polling() 
-
+  app.run_polling()
