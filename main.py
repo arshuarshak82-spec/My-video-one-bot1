@@ -20,10 +20,10 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-# ഗിത്ഹബ് സീക്രട്ടിൽ നിന്ന് ബോട്ട് ടോക്കൺ എടുക്കുന്നു
-BOT_TOKEN = os.getenv('BOT_TOKEN')
+# പുതിയ ടോക്കൺ നേരിട്ട് ഇവിടെ നൽകിയിരിക്കുന്നു
+BOT_TOKEN = "8809575029:AAE1cL_RWB2x0R7w4dOyGqw_qyOVbnWbP_k"
 
-# ജെമിനി എഐ ബാക്ക്എൻഡ് കോൺഫിഗറേഷൻ (ബോട്ട് ടോക്കൺ തന്നെ ജെമിനി കീ ആയി ഉപയോഗിക്കുന്നുവെങ്കിൽ)
+# ജെമിനി എഐ ബാക്ക്എൻഡ് കോൺഫിഗറേഷൻ
 genai.configure(api_key=BOT_TOKEN)
 gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
@@ -172,7 +172,6 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
       'no_warnings': True,
   }
 
-  # cookies.txt ഫയൽ ലഭ്യമാണെങ്കിൽ അത് ഉപയോഗിക്കാനുള്ള ക്രമീകരണം
   if os.path.exists('cookies.txt'):
     ydl_opts['cookiefile'] = 'cookies.txt'
 
@@ -280,7 +279,7 @@ def check_internet():
 
 if __name__ == '__main__':
   if not BOT_TOKEN:
-    raise ValueError("BOT_TOKEN environment variable is not set!")
+    raise ValueError("BOT_TOKEN is not set!")
 
   print('ഇന്റർനെറ്റ് കണക്ഷനായി കാത്തിരിക്കുന്നു...')
   while not check_internet():
@@ -300,3 +299,4 @@ if __name__ == '__main__':
   app.add_handler(CallbackQueryHandler(button_click))
 
   app.run_polling()
+
