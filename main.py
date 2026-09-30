@@ -1,3 +1,4 @@
+
 import logging
 import os
 import time
@@ -20,13 +21,11 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-# ടെലഗ്രാം ബോട്ട് ടോക്കൺ
 BOT_TOKEN = "8809575029:AAE1cL_RWB2x0R7w4dOyGqw_qyOVbnWbP_k"
+GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"
 
-# നിങ്ങൾ തന്ന പുതിയ ജെമിനി എപിഐ കീ ഇവിടെ കൃത്യമായി ചേർത്തിട്ടുണ്ട്
-GEMINI_API_KEY = "AQ.Ab8RN6LDISBiqS2-q4OoOOkjgoHPB72zZ4cQAPcOdncjs3O_RQ"
 genai.configure(api_key=GEMINI_API_KEY)
-gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+gemini_model = genai.GenerativeModel('gemini-1.5-flash')
 
 users_set = set()
 
@@ -127,13 +126,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
   else:
     try:
-      ai_response = gemini_model.generate_content(text)
-      await update.message.reply_text(
-          ai_response.text, reply_markup=get_ceo_button()
-      )
+      response = gemini_model.generate_content(text)
+      reply_text = response.text
+      await update.message.reply_text(reply_text, reply_markup=get_ceo_button())
     except Exception as e:
       await update.message.reply_text(
-          f"AI Processing Error: {str(e)}", reply_markup=get_ceo_button()
+          "Please send a valid media link (YouTube, Instagram, etc.) to download.",
+          reply_markup=get_ceo_button()
       )
 
 async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
