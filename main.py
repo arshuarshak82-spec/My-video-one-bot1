@@ -1,4 +1,3 @@
-
 import logging
 import os
 import time
@@ -297,5 +296,6 @@ if __name__ == '__main__':
       MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message)
   )
   app.add_handler(CallbackQueryHandler(button_click))
- 
+
   app.run_polling()
+
